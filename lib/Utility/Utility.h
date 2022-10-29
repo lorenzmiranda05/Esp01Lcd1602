@@ -5,11 +5,22 @@
 #include <ArduinoOTA.h>
 #include <TelnetStream.h>
 
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
 #define JsonConfigFile "/config.json"
 
-ESP8266WiFiMulti wm;
+#define COLUMNS 16
+#define ROWS 4
+#define LCD_SPACE_SYMBOL 0x20
+
+ESP8266WiFiMulti WiFiMulti;
+unsigned long previousMillis = 0;
+unsigned long interval = 60000;
 char espName[15];
 int broadcastDeviceDetails = 1;
+
+LiquidCrystal_I2C lcd(PCF8574_ADDR_A21_A11_A01, 4, 5, 6, 16, 11, 12, 13, 14, POSITIVE);
 
 void serialAndTelnetPrint(__FlashStringHelper *message)
 {
@@ -91,13 +102,14 @@ bool loadConfigFile()
                 serialAndTelnetPrintln(F("Parsing config"));
                 strcpy(espName, json["deviceType"]);
                 broadcastDeviceDetails = json["broadcastDeviceDetails"].as<int>();
-                wm.addAP(json["accessPoint"][0]["ssid"], json["accessPoint"][0]["password"]);
-                wm.addAP(json["accessPoint"][1]["ssid"], json["accessPoint"][1]["password"]);
-                wm.addAP(json["accessPoint"][2]["ssid"], json["accessPoint"][2]["password"]);
+                WiFiMulti.addAP(json["accessPoint"][0]["ssid"], json["accessPoint"][0]["password"]);
+                WiFiMulti.addAP(json["accessPoint"][1]["ssid"], json["accessPoint"][1]["password"]);
+                WiFiMulti.addAP(json["accessPoint"][2]["ssid"], json["accessPoint"][2]["password"]);
                 IPAddress gateway(192, 168, 1, 1);
                 IPAddress subnet(255, 255, 0, 0);
                 IPAddress local_IP(json["ipAddress"][0].as<int>(), json["ipAddress"][1].as<int>(), json["ipAddress"][2].as<int>(), json["ipAddress"][3].as<int>());
                 WiFi.config(local_IP, gateway, subnet);
+                ArduinoOTA.setPassword(json["otaPassword"]);
                 return true;
             }
             else
@@ -113,6 +125,16 @@ bool loadConfigFile()
         serialAndTelnetPrintln(F("Mount FS failed"));
     }
     return false;
+}
+
+void wifiReconnect()
+{
+    unsigned long currentMillis = millis();
+    if ((WiFi.status() != WL_CONNECTED) && (currentMillis - previousMillis >= interval))
+    {
+        WiFiMulti.run();
+        previousMillis = currentMillis;
+    }
 }
 
 void setupOTA()

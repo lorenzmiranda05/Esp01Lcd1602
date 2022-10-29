@@ -11,6 +11,7 @@ Template to be used for ESP8266-based boards with small flash memory.
         "deviceType" : "ESP01",
         "broadcastDeviceDetails" : 0,
         "ipAddress" : [192, 168, 1, 69],
+        "otaPassword" : "12345",
         "accessPoint" : [
                             {
                                 "ssid": "WiFi1",
@@ -42,6 +43,10 @@ Template to be used for ESP8266-based boards with small flash memory.
 <br  />
 |&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;|-- SPI @ 1.0
 <br  />
+|-- LiquidCrystal_I2C @ 1.2.4
+<br  />
+|&nbsp; &nbsp; &nbsp;|-- Wire @ 1.0
+<br  />
 |-- Utility
 <br  />
 |&nbsp; &nbsp; &nbsp;|-- ArduinoJson @ 6.19.4
@@ -56,6 +61,10 @@ Template to be used for ESP8266-based boards with small flash memory.
 <br  />
 |&nbsp; &nbsp; &nbsp;|-- ESP8266WiFi @ 1.0
 <br  />
+|&nbsp; &nbsp; &nbsp;|-- LiquidCrystal_I2C @ 1.2.4
+<br  />
+|&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;|-- Wire @ 1.0
+<br  />
 |&nbsp; &nbsp; &nbsp;|-- LittleFS @ 0.1.0
 <br  />
 |&nbsp; &nbsp; &nbsp;|-- TelnetStream @ 1.2.2
@@ -65,6 +74,8 @@ Template to be used for ESP8266-based boards with small flash memory.
 |&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;|-- Ethernet @ 2.0.0
 <br  />
 |&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;|&nbsp; &nbsp; &nbsp;|-- SPI @ 1.0
+<br  />
+|&nbsp; &nbsp; &nbsp;|-- Wire @ 1.0
 <br  />
 
 <br  />
@@ -77,3 +88,6 @@ Template to be used for ESP8266-based boards with small flash memory.
 * [x] Add option to stop broadcasting device details
 * [x] Use a static IP
 * [x] Load static IP from config.json file
+* [x] Display stuff to 5x8 dot 16x2 character LCD
+* [x] Allow LCD display update to function even without WiFi connection
+* [x] Add OTA Password
